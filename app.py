@@ -99,7 +99,7 @@ def index():
         if 'reactor_img' in data:             
             del data['reactor_img']
             
-        app.logger.info(f"------------------------------{reactor_img}--------------------")
+        app.logger.info(f"------------------------------{data}--------------------")
         Gen_base64 = call_txt2img_api(control_pose,reactor_img,**data)
         # app.logger.info(Gen_base64)
         pass_json = json.dumps({"Gen_base64":Gen_base64})

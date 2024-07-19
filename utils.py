@@ -156,6 +156,7 @@ def get_reactor_json(reactor_img):
     
 
 def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data): 
+    able_control = data["able_controlnet"]["able_controlnet"]
     controlnet_img_base64 = controlnet_img_base64["control_pose"]
     image_path = os.path.join(current_dir, 'static', 'img', 'control_pose', controlnet_img_base64)
     img = cv2.imread(image_path)
@@ -166,7 +167,7 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
         "controlnet": {
             "args": [
                 {
-                    "enabled": True,
+                    "enabled": able_control,
                     "image": controlnet_img_base64,
                     "module":"openpose_full",
                     "model": "control_v11p_sd15_openpose [cab727d4]",
