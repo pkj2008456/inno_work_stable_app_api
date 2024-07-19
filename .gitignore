@@ -1,3 +1,8 @@
 env/
 node_modules/
 *.log
+static/img/txt2img/*
+static/img/face/*
+static/img/img2img/*
+!static/img/face/
+!static/img/img2img/

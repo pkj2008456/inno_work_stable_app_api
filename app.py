@@ -82,9 +82,7 @@ def index():
         app.logger.info("into post")
 
         data = request.get_json(force=True)
-        app.logger.info("===========================================================================================================")
-        app.logger.info(data)
-        app.logger.info("====================================================================================================================")
+        app.logger.info(f"================={data}==================")
         refresh()
         app.logger.info("test1")
         set_checkpoint(**data)
@@ -92,7 +90,9 @@ def index():
         current_model = get_current_model()
         app.logger.info(f"Current model: {current_model}")
         control_pose = data["control_pose"]
-        reactor_img = data["reactor_img"]
+        reactor_img = data["reactor_img"]["reactor_img"]
+        if 'reactor_img' in data:     
+             del data['reactor_img']
         app.logger.info(f"------------------------------{reactor_img}--------------------")
         Gen_base64 = call_txt2img_api(control_pose,reactor_img,**data)
         # app.logger.info(Gen_base64)
