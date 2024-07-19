@@ -23,10 +23,10 @@ logging.basicConfig(filename=log_file_path, level=logging.INFO,
 
 @app.errorhandler(Exception)
 def handle_exception(e):
-    # 記錄未捕獲的例外
+
     app.logger.error(f"Unhandled Exception: {str(e)}", exc_info=True)
     
-    # 如果你想返回一個自定義的錯誤頁面或 JSON 响应
+
     response = jsonify({'error': 'An internal error occurred.'})
     response.status_code = 500
     return response
@@ -90,9 +90,15 @@ def index():
         current_model = get_current_model()
         app.logger.info(f"Current model: {current_model}")
         control_pose = data["control_pose"]
-        reactor_img = data["reactor_img"]["reactor_img"]
-        if 'reactor_img' in data:     
-             del data['reactor_img']
+        
+        app.logger.info(f"========================contorl_pose:{control_pose}===================")
+        
+            
+        reactor_img = data.get("reactor_img", {}).get("reactor_img", None)
+
+        if 'reactor_img' in data:             
+            del data['reactor_img']
+            
         app.logger.info(f"------------------------------{reactor_img}--------------------")
         Gen_base64 = call_txt2img_api(control_pose,reactor_img,**data)
         # app.logger.info(Gen_base64)

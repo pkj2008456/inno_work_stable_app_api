@@ -169,7 +169,9 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
                     "enabled": True,
                     "image": controlnet_img_base64,
                     "module":"openpose_full",
-                    "model": "control_v11p_sd15_openpose [cab727d4]"
+                    "model": "control_v11p_sd15_openpose [cab727d4]",
+                    "control_mode": "ControlNet is more important",
+                    "weight" : 2
                 }
             ]
         }
