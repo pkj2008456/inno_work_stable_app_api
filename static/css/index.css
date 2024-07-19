@@ -1,0 +1,505 @@
+* {
+    font-family: Inter;
+    font-weight: bold;
+}
+
+/* .fontfa{
+    font-family: Inter;
+} */
+
+input[type="text"]:focus {
+    outline: none;
+    caret-color: #fff;
+    /* caret: ; */
+  }
+
+.generator-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 420px;
+    min-height: 100%;
+    /* background-color: #e5e5e5; */
+    border-radius: 15px;
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.25);
+    overflow: scroll;
+    scrollbar-width: none;
+    /* padding: 20px 25px 10px 25px; */
+
+}
+
+
+
+
+.templateButton {
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: 1.4rem;
+    border-radius: 15px;
+    border: none;
+}
+
+.inside-navbar {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+
+}
+
+.inside-navbar div {
+    width: 100%;
+    text-align: center;
+}
+
+
+.insideNavbarItem {
+    background-color: transparent;
+    transition: background-color 0.1s ease;
+}
+
+.insideNavbarItem.clicked {
+    border-radius: 13px 15px 0px 0px;
+    background: #F6F6F6;
+}
+
+
+.sidebar-context {
+    display: block;
+    height: 83%;
+    overflow: scroll;
+    scrollbar-width: none;
+    padding: 20px 25px 10px 25px;
+    background: #F6F6F6;
+    border: 1px solid rgb(76, 71, 71);
+
+}
+
+.description-line {
+    height: auto;
+    display: block;
+}
+
+.description-button {
+    display: flex;
+    float: right;
+}
+
+.description-button div {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.description-text {
+    display: inline;
+    font-size: 17px;
+    
+}
+
+
+.prompt-box,
+.negative-prompt-box {
+    box-sizing: border-box;
+    width: 100%;
+    height: 8rem;
+    padding: 15px 10px;
+    background: #E5E5E5;
+    border: none;
+    border-radius: 12px;
+    color: aliceblue;
+    font-size: 15px;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+.negative-prompt-box {
+    height: 7rem;
+}
+
+.prompt-input {
+    border: none;
+    background: #E5E5E5;
+    width: 100%;
+    height: 15%;
+    outline: none;
+}
+
+.text-line {
+    display: block;
+    height: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.right {
+    float: right;
+}
+
+.right:hover {
+    font-size: 17px;
+    cursor: pointer;
+}
+
+
+
+
+.left {
+    float: left;
+    font-size: 15px;
+}
+
+.gender-radio-box {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+}
+
+
+
+.gender-radio-box input[type="radio"] {
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    background-color: #E5E5E5;
+}
+
+.age-box {
+    margin-top: 1.5rem;
+}
+
+.age-text,
+.hair-color-text {
+    height: 25px;
+}
+
+.age-range-box input {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.style-line {
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.style-line select {
+    color: #FFFFFF;
+    background-color: #434343;
+    border: #434343;
+}
+.style-line select:hover {
+    background-color: #585858;
+    border: #585858;
+}
+
+.selectItem{
+    display: flex;
+    justify-content: space-around;
+}
+
+
+
+
+.el {
+    background: #E5E5E5;
+    border-radius: 8px;
+    width: 100%;
+    height: 2rem;
+    border: none;
+}
+/* 
+.hair-item {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid;
+}
+
+.hair-color-line {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+}
+
+
+.hair-color-line img {
+    margin-top: 6px;
+    width: 20px;
+    height: 20px;
+} */
+
+.hair-item {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.hair-item-clicked{
+    width: 25px;
+    height: 25px;
+    border: 2px solid #5162FF;
+}
+
+.hair-color-line .hair-item:checked {
+    border: 1.5px solid #5162FF;
+}
+
+.hair-color-line {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.2rem;
+}
+
+.hair-color-line img {
+    margin-top: 6px;
+    width: 20px;
+    height: 20px;
+}
+
+
+
+.Backgroud-button-area {
+    display: flex;
+    justify-content: space-around;
+}
+
+.Backgroud-box select {
+    background: #E5E5E5;
+    border-radius: 8px;
+    border: none;
+    width: 65%;
+    height: 2.2rem;
+}
+
+.Backgroud-box button {
+    background: #E5E5E5;
+    border: none;
+    border-radius: 8px;
+    width: 25%;
+}
+
+
+.Backgroud-box button:hover {
+    border-style: solid
+}
+
+.generateor-button-box {
+    width: 100%;
+    height: 4.5rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid rgb(76, 71, 71);
+    background: #F6F6F6;
+
+}
+
+.generateor-button-box button {
+    
+    width: 80%;
+    height: 60%;
+    border-radius: .55rem;
+    border: none;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.25);
+
+}
+
+/* chip */
+.chip {
+    margin-left: 0.22rem;
+    margin-top: 0.22rem;
+    display: inline-block;
+    padding: 0 10px;
+    height: auto;
+    line-height: 35px;
+    border-radius: 25px;
+    background-color: #f1f1f1;
+}
+
+
+.closebtn {
+    padding-left: 10px;
+    color: #888;
+    font-weight: bold;
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.chip select,
+.chip select:focus {
+    color : #fff;
+    width: auto;
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+.chip select option{
+    background-color: #4D4D4D;
+}
+
+
+
+/* range style */
+.range-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.range-slider-container {
+    width: 100%;
+    position: relative;
+}
+
+.range-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background-color: #FFFFFF;
+    outline: none;
+    border-radius: 5px;
+    /* opacity: 0.7; */
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.range-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.range-steps {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 65%;
+    transform: translateY(-50%);
+    width: 100%;
+}
+
+.step-point {
+    width: 10px;
+    height: 10px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+}
+
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 14px;
+    color: #FFFFFF;
+    margin-top: 10px;
+}
+
+
+.random-button {
+    width: 7rem;
+    height: 1.4rem;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.reset-button {
+    cursor: pointer;
+}
+
+.reset-button:hover {
+    font-weight: bold;
+}
+
+
+/* above is for generate css */
+
+/* following is for face upload */
+.sidebar-face-upload{
+    display: none;
+    height: 83%;
+    overflow: scroll;
+    scrollbar-width: none;
+    padding: 20px 25px 10px 25px;
+    background: #F6F6F6;
+    border: 1px solid rgb(76, 71, 71);
+}
+.sidebar-pose{
+    display: none;
+    height: 83%;
+    overflow: scroll;
+    scrollbar-width: none;
+    padding: 20px 25px 10px 25px;
+    background: #F6F6F6;
+    border: 1px solid rgb(76, 71, 71);
+}
+
+#waitingImg{
+    position: fixed;
+    display: none;
+}
+
+
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 將容器高度設置為視口高度 */
+    margin-left: 420px; /* 根據側邊欄寬度調整 */
+  }
+  
+  .image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    padding: 1rem;
+    object-fit: contain; /* 保持圖像比例,填充容器 */
+  }
+
+  .hidden {
+    display: none ;
+  }
+
+.backgroudColor-main{
+    background-color: #333333;
+}
+.backgroudColor-sub{
+    background-color: #434343;
+}
+
+.backgroudColor-item{
+    background-color: #5162FF;
+}
+
+.fontTextColor{
+    color: #FFFFFF;
+}
+
+.forSubTextColor{
+    font-size: .9rem;
+    color: #C2C2C2;
+}
+
+.select-color{
+    color: #434343;
+}
+
