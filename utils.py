@@ -185,7 +185,7 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
     
     payload = data["payload"]
     del payload['override_settings']
-    with open('test.json', 'w') as f:
+    with open('check_payload.json', 'w') as f:
         json.dump(payload, f, indent=4)
         utils_logger.info("already utils_logger.info")
     
