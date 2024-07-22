@@ -9,3 +9,4 @@ static/img/img2img/*
 test.json 
 __pycache__/
 testapi/img2img.json
+model_list.json
