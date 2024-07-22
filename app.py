@@ -112,11 +112,7 @@ def index():
         return json.dumps({message:message})
         # return render_template('index.html')
     
-    
-@app.route('/get_session', methods=['GET'])
-def get_session():
-    session_data = dict(session)
-    return session_data
+
 
 
 

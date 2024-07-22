@@ -52,6 +52,46 @@
     ```
 ## API文档
     >domain: `https://ai-generation.innocorn.xyz`
-    
+
+1. this endpoint is for text to img "https://ai-generation.innocorn.xyz/txt2img"
+2.   the request sample below 
+      ***(methods = post)***
+   ```json
+    {
+    "able_controlnet": {
+        "able_controlnet": true #use controlnet or not
+    },
+    "payload": {
+        "prompt": "a south asian young adult others with white skin tone and an plus size body type, wearing a bohemian navy shirt dress leggings and white shoes, accessorized with a necklace,with long brown hair",
+        "negative_prompt": "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4),(deformed, distorted, disfigured:1.3),poorly drawn,bad anatomy,wrong anatomy,extra limb,missing limb,floating limbs,disconnected limbs,mutation,mutated,ugly,disgusting,amputation,watermark text,",
+        "seed": 1,
+        "steps": 20,
+        "width": 720,
+        "height": 720,
+        "cfg_scale": 5,
+        "sampler_name": "DPM++ 2M",
+        "n_iter": 1,
+        "batch_size": 1,#how many gen photo you want
+        "override_settings": {
+            "sd_model_checkpoint": "realisticVisionV60B1_v51HyperVAE"
+        }
+    },
+    "control_pose": {
+        "control_pose": "2.jpg"#if able_controlnet is false just dont change it
+    },
+    "reactor_img": { #if dont want to change the face just delete whole key
+        "reactor_img": "static/img/face\\upload-Damian_2_1.jpeg"
+    }
+}
+```
+***return***
+```json
+{
+    Gen_base64:"string"
+}
+```
+
+
+
 
 
