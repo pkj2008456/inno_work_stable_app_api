@@ -75,14 +75,27 @@ def hello():
     
     return redirect('/txt2img',code=302)
 
-@app.route("/setCheckPoint",method="post")
-def checkporint():
-    app.logger.info("in the setcheckpoint route")
-    data = request.get_json(force=True)
-    refresh()
-    set_checkpoint(**data)
-    current_model = get_current_model()
-    app.logger.info(f"done to set check point:{current_model}")
+@app.route("/setCheckPoint", methods=["POST"])
+def set_checkpoint_route():
+    try:
+        app.logger.info("in the setcheckpoint route")
+        data = request.get_json(force=True)
+        app.logger.info(f"Received data: {data}")
+
+        # Verify data format
+        if not data or 'payload' not in data or 'override_settings' not in data['payload']:
+            raise ValueError("Invalid data format")
+
+        refresh()
+        set_checkpoint(**data)
+        current_model = get_current_model()
+        app.logger.info(f"done to set checkpoint: {current_model}")
+        return jsonify({'message': 'Checkpoint set successfully', 'current_model': current_model})
+
+    except Exception as e:
+        app.logger.error(f"Error in setCheckpoint route: {e}")
+        return jsonify({'error': str(e)}), 400
+
     
 @app.route('/txt2img', methods=['GET', 'POST'])
 def index():
