@@ -87,7 +87,7 @@
 ***return***
 ```json
 {
-    Gen_base64:"string"
+    Gen_base64:"base64_string"
 }
 ```
 

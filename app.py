@@ -1,6 +1,6 @@
 import os
 from flask import Flask,render_template,url_for,request,redirect,make_response,jsonify,session
-from utils import call_txt2img_api,set_checkpoint,refresh,get_current_model,encode_file_to_base64
+from utils import call_txt2img_api,set_checkpoint,refresh,get_current_model,encode_file_to_base64,call_img2img_api
 import json
 from werkzeug.utils import secure_filename
 import secrets
@@ -57,7 +57,7 @@ def upload_file():
 
 @app.route('/get_control_pose', methods=["GET"])
 def get_control_pose():
-    app.logger.info("geted")
+    # app.logger.info("geted")
     img_folder = os.path.join('static', 'img', 'control_pose')
     # img_folder = os.path.join(app.root_path)
 
@@ -67,7 +67,7 @@ def get_control_pose():
     result = [{"path": path, "base64": base64_str} for path, base64_str in zip(image_paths, image_base64)]
         
     jsonify(result)
-    app.logger.info(f"======================={type(result)}=================================")
+    # app.logger.info(f"======================={type(result)}=================================")
     return result    
 
 @app.route('/')
@@ -112,7 +112,23 @@ def index():
         return json.dumps({message:message})
         # return render_template('index.html')
     
+@app.route("/img2img", methods=["POST"])
+def img2img():
+    data = request.get_json()
+    app.logger.info(f"Received data for img2img: {data}")
 
+    # 验证数据
+    if not data or 'init_images' not in data:
+        return jsonify({'error': 'Invalid data provided'}), 400
+
+    # 调用 utils.py 中的 call_img2img_api 函数
+    try:
+        images_base64 = call_img2img_api(**data)
+        app.logger.info(f'img2img_done')
+        return jsonify({'images': images_base64}), 200
+    except Exception as e:
+        app.logger.error(f"Error in img2img: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 
 
