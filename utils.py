@@ -58,7 +58,7 @@ def delete_img():
         all_files = os.listdir(img_path)
         txt2img_files = [f for f in all_files if f.startswith('txt2img-')]
         utils_logger.info(txt2img_files)
-        recent_files = sorted(txt2img_files, reverse=True)[:3]
+        recent_files = sorted(txt2img_files, reverse=True)[:10]
         for f in all_files:
             utils_logger.info(f)
             if f not in recent_files:
@@ -198,3 +198,10 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
         save_path = os.path.join(out_dir_t2i, f'txt2img-{timestamp()}-{index}.png')
         decode_and_save_base64(image, save_path)
         return image
+
+def call_img2img_api(**payload):
+    response = call_api('sdapi/v1/img2img', **payload)
+    images = response.get('images', [])
+    
+    # 将图像数据作为 Base64 字符串返回
+    return images
