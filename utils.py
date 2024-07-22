@@ -91,6 +91,22 @@ def set_checkpoint(**data):
 def refresh():
     call_api('/sdapi/v1/refresh-checkpoints', method='POST')
 
+def get_model_list():
+    try:
+        response = requests.get(f'{webui_server_url}/sdapi/v1/sd-models')
+        response.raise_for_status() 
+        response_json = response.json()
+
+        with open("model_list.json", "w") as f:
+            json.dump(response_json, f, indent=4)
+
+        return response_json
+
+    except requests.exceptions.RequestException as e:
+        utils_logger.error(f"Error occurred while getting model list: {e}")
+        return None
+
+    
 
 def get_current_model():
     try:

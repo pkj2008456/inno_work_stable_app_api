@@ -1,6 +1,6 @@
 import os
 from flask import Flask,render_template,url_for,request,redirect,make_response,jsonify,session
-from utils import call_txt2img_api,set_checkpoint,refresh,get_current_model,encode_file_to_base64,call_img2img_api
+from utils import call_txt2img_api,set_checkpoint,refresh,get_current_model,encode_file_to_base64,call_img2img_api,get_model_list
 import json
 from werkzeug.utils import secure_filename
 import secrets
@@ -75,13 +75,17 @@ def hello():
     
     return redirect('/txt2img',code=302)
 
+@app.route("/get_model_list",methods = ["get"])
+def get_model():
+    model_list = get_model_list()  # 获取模型列表数据
+    return jsonify(model_list)
+    
 @app.route("/setCheckPoint", methods=["POST"])
 def set_checkpoint_route():
     try:
         app.logger.info("in the setcheckpoint route")
         data = request.get_json(force=True)
         app.logger.info(f"Received data: {data}")
-
         # Verify data format
         if not data or 'payload' not in data or 'override_settings' not in data['payload']:
             raise ValueError("Invalid data format")
