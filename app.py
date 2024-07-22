@@ -75,6 +75,15 @@ def hello():
     
     return redirect('/txt2img',code=302)
 
+@app.route("/setCheckPoint",method="post")
+def checkporint():
+    app.logger.info("in the setcheckpoint route")
+    data = request.get_json(force=True)
+    refresh()
+    set_checkpoint(**data)
+    current_model = get_current_model()
+    app.logger.info(f"done to set check point:{current_model}")
+    
 @app.route('/txt2img', methods=['GET', 'POST'])
 def index():
     app.logger.info(request.method)
@@ -84,9 +93,7 @@ def index():
         data = request.get_json(force=True)
         app.logger.info(f"================={data}==================")
         refresh()
-        app.logger.info("test1")
         set_checkpoint(**data)
-        app.logger.info("test")
         current_model = get_current_model()
         app.logger.info(f"Current model: {current_model}")
         control_pose = data["control_pose"]

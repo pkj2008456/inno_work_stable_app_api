@@ -51,10 +51,10 @@
     $ (env) python app.py   
     ```
 ## API文档
-    >domain: `https://ai-generation.innocorn.xyz`
+>domain: `https://ai-generation.innocorn.xyz`
 
 1. this endpoint is for text to img "https://ai-generation.innocorn.xyz/txt2img"
-2.   the request sample below 
+-   the request sample below 
       ***(methods = post)***
    ```json
     {
@@ -90,7 +90,34 @@
     Gen_base64:"base64_string"
 }
 ```
+2. for img to img
+- **/img2img", methods=["POST"]**
+- request
+  ```
+  data = {
+        "prompt": "1girl, blue hair",
+        "seed": 1,
+        "steps": 20,
+        "width": 512,
+        "height": 512,
+        "denoising_strength": 0.5,#the lager the value,the less like the original image.The max value is one
+        "n_iter": 1,
+        "init_images": [example_base64_image],
+        "batch_size": 1 # num of gen_img
+    }
+    ```
+    ```
+-respone
+```
+{
+    "images": [
+        "base64_String"
+    ]
+}
+```
 
+
+   
 
 
 
