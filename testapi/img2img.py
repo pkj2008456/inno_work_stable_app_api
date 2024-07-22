@@ -29,7 +29,10 @@ def main():
         if response.status_code == 200:
             # 解析 JSON 响应
             response_json = response.json()
-            print("响应 JSON:", json.dumps(response_json, indent=2))
+            
+            with open('img2img.json', 'w') as f:
+                json.dump(response_json, f, indent=4)
+                print("响应 JSON:", json.dumps(response_json, indent=2))
         else:
             print("请求失败，状态码:", response.status_code)
             print("响应内容:", response.text)
