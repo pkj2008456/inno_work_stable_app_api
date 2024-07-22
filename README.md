@@ -90,6 +90,7 @@
     Gen_base64:"base64_string"
 }
 ```
+___
 2. for img to img
 - **/img2img", methods=["POST"]**
 - request
@@ -107,7 +108,7 @@
     }
     ```
     ```
--respone
+- respone
 ```
 {
     "images": [
@@ -115,8 +116,117 @@
     ]
 }
 ```
+___
+3. set the check point
+- ("/setCheckPoint", methods=["POST"])
+  
+**request**
+```
+  #the data may be are json:data['payload']['override_settings']['sd_model_checkpoint']
+  #e.g (js)
+  document.getElementById("test").addEventListener("click", () => {
+    let payload = {
+        "override_settings": {
+            'sd_model_checkpoint': "realisticVisionV60B1_v51HyperVAE"  //this can use to switch sd model waiREALCN_v70 or realisticVisionV60B1_v51HyperVAE
+        }
+    };
+    let data = { payload };
+    fetch("https://ai-generation.innocorn.xyz/setCheckPoint", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+```
+**return**
 
+```
+{current_model:"string",
+message:"checkpoint set successfully"}
+```
+___
+4. get_model_list (in case on you dont know what model you can change)
+- ("/get_model_list",methods = ["get"])
+  
+**return**(model_name may use on set_check_point)
 
+```
+[
+    {
+        "title": "chilloutrealistic_v21.safetensors [e114478c02]",
+        "model_name": "chilloutrealistic_v21",
+        "hash": "e114478c02",
+        "sha256": "e114478c0212307077585e2cca0c3aa71180f52784d7b54944431249f8f827d9",
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\chilloutrealistic_v21.safetensors",
+        "config": null
+    },
+    {
+        "title": "hanfu.safetensors",
+        "model_name": "hanfu",
+        "hash": null,
+        "sha256": null,
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\hanfu.safetensors",
+        "config": null
+    },
+    {
+        "title": "hanfuSong_v35.safetensors",
+        "model_name": "hanfuSong_v35",
+        "hash": null,
+        "sha256": null,
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\hanfuSong_v35.safetensors",
+        "config": null
+    },
+    {
+        "title": "orientalGoddess_001LCM.safetensors",
+        "model_name": "orientalGoddess_001LCM",
+        "hash": null,
+        "sha256": null,
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\orientalGoddess_001LCM.safetensors",
+        "config": null
+    },
+    {
+        "title": "realisticVisionV60B1_v51HyperVAE.safetensors [f47e942ad4]",
+        "model_name": "realisticVisionV60B1_v51HyperVAE",
+        "hash": "f47e942ad4",
+        "sha256": "f47e942ad4c30d863ad7f53cb60145ffcd2118845dfa705ce8bd6b42e90c4a13",
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\realisticVisionV60B1_v51HyperVAE.safetensors",
+        "config": null
+    },
+    {
+        "title": "v1-5-pruned-emaonly.safetensors",
+        "model_name": "v1-5-pruned-emaonly",
+        "hash": null,
+        "sha256": null,
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\v1-5-pruned-emaonly.safetensors",
+        "config": null
+    },
+    {
+        "title": "wdr_realisti_hanfu.safetensors",
+        "model_name": "wdr_realisti_hanfu",
+        "hash": null,
+        "sha256": null,
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\wdr_realisti_hanfu.safetensors",
+        "config": null
+    },
+    {
+        "title": "Yuna_NOFACE.safetensors [50329e6356]",
+        "model_name": "Yuna_NOFACE",
+        "hash": "50329e6356",
+        "sha256": "50329e635601f4a44b62dbf010d3b6681a3fbd64e5c6fd00d5aa1a7f5e1356f1",
+        "filename": "C:\\stable_diffusion_app\\stable-diffusion-webui\\models\\Stable-diffusion\\Yuna_NOFACE.safetensors",
+        "config": null
+    }
+]
+```
    
 
 
