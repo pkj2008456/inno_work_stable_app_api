@@ -130,8 +130,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 def get_reactor_json(reactor_img):
     
-    image_path = os.path.join(current_dir, reactor_img)
-    basse64 = encode_file_to_base64(image_path)
+    # image_path = os.path.join(current_dir, reactor_img)
+    # basse64 = encode_file_to_base64(image_path)
+    bassae64 = base64.b64decode(reactor_img)
+    basse64 = base64.b64encode(bassae64).decode('utf-8')
+    utils_logger.info(f"======================A {basse64} A=====================")
     model_dir = os.path.join(current_dir, '..','stable-diffusion-webui', 'models', 'insightface')
     model_path = os.path.join(model_dir, 'inswapper_128.onnx')
     reactor_json = {
@@ -185,9 +188,9 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
                 {
                     "enabled": able_control,
                     "image": controlnet_img_base64,
-                    "module":"openpose_full",
+                    "module":"none",
                     "model": "control_v11p_sd15_openpose [cab727d4]",
-                    "control_mode": "ControlNet is more important",
+                    "control_mode": "Balanced",
                     "weight" : 2
                 }
             ]
@@ -218,6 +221,6 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
 def call_img2img_api(**payload):
     response = call_api('sdapi/v1/img2img', **payload)
     images = response.get('images', [])
-    
+    utils_logger.info("base64 ",images)
     # 将图像数据作为 Base64 字符串返回
     return images
