@@ -55,20 +55,24 @@ def upload_file():
     return jsonify({'update_message': update_message,'file_path': filepath})
 
 
+
 @app.route('/get_control_pose', methods=["GET"])
 def get_control_pose():
-    # app.logger.info("geted")
     img_folder = os.path.join('static', 'img', 'control_pose')
-    # img_folder = os.path.join(app.root_path)
 
-    image_files = [f for f in os.listdir(img_folder) if f.endswith(('.png', '.jpg', '.jpeg'))]
-    image_paths = [os.path.join('img', 'control_pose', f) for f in image_files]
-    image_base64 = [encode_file_to_base64(os.path.join(img_folder, f)) for f in image_files]
-    result = [{"path": path, "base64": base64_str} for path, base64_str in zip(image_paths, image_base64)]
-        
-    jsonify(result)
-    # app.logger.info(f"======================={type(result)}=================================")
-    return result    
+    result = []
+    
+
+    for root, dirs, files in os.walk(img_folder):
+        for file in files:
+            if file.endswith(('.png', '.jpg', '.jpeg')):
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path, 'static')  
+
+                result.append({"path": relative_path})
+
+    return jsonify(result)
+
 
 @app.route('/')
 def hello():
