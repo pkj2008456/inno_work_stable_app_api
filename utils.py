@@ -212,11 +212,22 @@ def call_txt2img_api(controlnet_img_base64,reactor_img=None,**data):
         utils_logger.info("already utils_logger.info")
     
     response = call_api_2('sdapi/v1/txt2img',method='POST',**payload)
-    # utils_logger.info("API Response:", response)  
-    for index, image in enumerate(response.get('images')):        
+    
+    images = response.get('images', [])
+    result_info = response["info"]
+    test = json.loads(result_info)
+    seed = {"seed":test.get("seed")}
+    utils_logger.info(f"this is info ==================={seed}")
+    
+    result = {
+        "images": images,
+        "seed": seed
+    }
+    for index, image in enumerate(images):#save the img
         save_path = os.path.join(out_dir_t2i, f'txt2img-{timestamp()}-{index}.png')
         decode_and_save_base64(image, save_path)
-        return image
+
+    return result
 
 def call_img2img_api(**payload):
     response = call_api('sdapi/v1/img2img', **payload)

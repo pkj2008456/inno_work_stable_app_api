@@ -117,24 +117,23 @@ def index():
         
         app.logger.info(f"========================contorl_pose:{control_pose}===================")
         
-            
         reactor_img = data.get("reactor_img", {}).get("reactor_img", None)
 
         if 'reactor_img' in data:             
             del data['reactor_img']
             
         app.logger.info(f"------------------------------{data}--------------------")
-        Gen_base64 = call_txt2img_api(control_pose,reactor_img,**data)
-        # app.logger.info(Gen_base64)
-        pass_json = json.dumps({"Gen_base64":Gen_base64})
-        app.logger.info(f"======================this is Gen_base64:{pass_json}================")
-        # app.logger.info(pass_json)
-        return pass_json
+        text2img_data = call_txt2img_api(control_pose, reactor_img, **data)
+       
+        #app.logger.info(f"======================this is text2img_data_info:{text2img_data}================")
+        #logger return is :{'images': ['base64String'], 'seed': {'seed': 4120469804}}
+        app.logger.info("this is json",type(jsonify(text2img_data)),jsonify(text2img_data))
+        return jsonify(text2img_data)  
+        
     else:
         app.logger.info("this is get txt2img")
         message = "dont request get"
-        return json.dumps({message:message})
-        # return render_template('index.html')
+        return jsonify({message: message})
     
 @app.route("/img2img", methods=["POST"])
 def img2img():
