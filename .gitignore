@@ -8,5 +8,5 @@ static/img/img2img/*
 !static/img/img2img/
 test.json 
 __pycache__/
-testapi/img2img.json
+testapi/*
 model_list.json
