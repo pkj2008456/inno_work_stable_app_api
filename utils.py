@@ -129,7 +129,7 @@ def get_reactor_json(reactor_img):
     # basse64 = encode_file_to_base64(image_path)
     bassae64 = base64.b64decode(reactor_img)
     basse64 = base64.b64encode(bassae64).decode('utf-8')
-    utils_logger.info(f"======================A {basse64} A=====================")
+    # utils_logger.info(f"======================A {basse64} A=====================")
     model_dir = os.path.join(current_dir, '..', 'stable-diffusion-webui', 'models', 'insightface')
     model_path = os.path.join(model_dir, 'inswapper_128.onnx')
     
@@ -228,6 +228,6 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
 def call_img2img_api(**payload):
     response = call_api('sdapi/v1/img2img', **payload)
     images = response.get('images', [])
-    utils_logger.info(f"Base64 images: {images}")
+    # utils_logger.info(f"Base64 images: {images}")
     return images
 

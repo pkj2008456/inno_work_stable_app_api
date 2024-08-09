@@ -10,6 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 CORS(app)
+
 app.config['SESSION_TYPE'] = 'filesystem'
 app.root_path = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOAD_FOLDER'] = 'static/img/face'
@@ -154,4 +155,4 @@ def img2img():
 
 if __name__ == '__main__':
     from waitress import serve
-    serve(app, host='0.0.0.0', port=8080)
+    serve(app, host='0.0.0.0', port=8080, channel_timeout=600,channel_backlog=100)
