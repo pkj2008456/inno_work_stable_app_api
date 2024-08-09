@@ -29,7 +29,7 @@ file_handler = RotatingFileHandler(log_file_path, maxBytes=5*1024*1024, backupCo
 file_handler.setLevel(logging.INFO)
 
 # File handler for error and above
-error_file_handler = RotatingFileHandler(log_file_path, maxBytes=5*1024*1024, backupCount=5)
+error_file_handler = RotatingFileHandler(error_log_file_path, maxBytes=5*1024*1024, backupCount=5)
 error_file_handler.setLevel(logging.ERROR)
 
 # Formatter for all handlers
@@ -135,7 +135,13 @@ def index():
 @app.route("/img2img", methods=["POST"])
 def img2img():
     data = request.get_json()
-    logger.info(f"Received data for img2img: {data}")
+    
+    #for log testa
+    key_to_exclude = 'init_images'
+    log_show = {k:v for k , v in data.items() if k != key_to_exclude}
+    log_show = json.dumps(log_show,indent=4)
+    logger.info(f"Received data for img2img: {log_show} Remain: there is init_images include it but I deleted")
+    
     if not data or 'init_images' not in data:
         return jsonify({'error': 'Invalid data provided'}), 400
     try:
