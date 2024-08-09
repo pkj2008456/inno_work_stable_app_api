@@ -211,8 +211,8 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
     
     images = response.get('images', [])
     result_info = response.get("info", "{}")
-    test = json.loads(result_info)
-    seed = {"seed": test.get("seed")}
+    load_to_dict = json.loads(result_info)
+    seed = {"seed": load_to_dict.get("seed")}
     utils_logger.info(f"Generated seed info: {seed}")
     
     result = {
