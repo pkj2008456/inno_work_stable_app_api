@@ -9,7 +9,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 from db import db  
 from models import User, Image 
-
+from concurrent.futures import ThreadPoolExecutor
+import uuid
+from threading import Lock
 
 
 app = Flask(__name__)
@@ -47,6 +49,10 @@ error_file_handler.setFormatter(formatter)
 # Add handlers to logger
 logger.addHandler(file_handler)
 logger.addHandler(error_file_handler)
+
+executor = ThreadPoolExecutor()
+tasks = {}
+tasks_lock = Lock()
 
 @app.errorhandler(Exception)
 def handle_exception(e):
@@ -136,6 +142,8 @@ def set_checkpoint_route():
     except Exception as e:
         logger.error(f"Error in setCheckpoint route: {e}")
         return jsonify({'error': str(e)}), 400
+    
+
 
 @app.route('/txt2img', methods=['GET', 'POST'])
 def index():
@@ -154,18 +162,36 @@ def index():
         if 'reactor_img' in data:
             del data['reactor_img']
         logger.info(f"Data after removing reactor_img: {data}")
-        text2img_data = call_txt2img_api(control_pose, reactor_img, **data)
-        # logger.info(f"Text2Img data: {text2img_data}")
-        with open('testapi/text2img_data.json','w') as f:
-            json.dump(text2img_data,f,indent=4)
-            logger.info("already gen to text2img_data.json")
-            
-        return jsonify(text2img_data)
+        task_id = str(uuid.uuid4())
+        
+        with tasks_lock:
+            tasks[task_id] = {'status': 'processing'}
+        
+        def background_task(task_id):
+            text2img_data = call_txt2img_api(control_pose, reactor_img, **data)
+            with open('testapi/text2img_data.json','w') as f:
+                json.dump(text2img_data,f,indent=4)
+                logger.info("already gen to text2img_data.json")
+            with tasks_lock:
+                tasks[task_id] = {'status': 'completed', 'text2img_data': text2img_data}
+        
+        executor.submit(background_task, task_id)
+        
+        return jsonify({'message': 'Task started', 'task_id': task_id})
     else:
-        logger.info("GET request to /txt2img")
-        message = "Don't request GET"
-        return jsonify({'message': message})
+        return jsonify({'message': "Don't request GET"})
 
+@app.route('/task_result/<task_id>', methods=['GET'])
+def task_result(task_id):
+    with tasks_lock:
+        task = tasks.get(task_id)
+    
+    if not task:
+        return jsonify({'task_id': task_id, 'status': 'not found'})
+    if task['status'] == 'completed':
+        return jsonify({'task_id': task_id, 'status': 'completed', 'text2img_data': task['text2img_data']})
+    else:
+        return jsonify({'task_id': task_id, 'status': task['status']})            
 @app.route("/img2img", methods=["POST"])
 def img2img():
     data = request.get_json()
