@@ -19,12 +19,12 @@ os.makedirs(log_folder, exist_ok=True)
 
 # File handler for info and above
 log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), log_folder, 'utils.log')
-file_handler = RotatingFileHandler(log_file_path, maxBytes=5*1024*1024, backupCount=5)
+file_handler = RotatingFileHandler(log_file_path, maxBytes=1*1024*1024, backupCount=5)
 file_handler.setLevel(logging.INFO)
 
 # File handler for error and above
 error_log_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), log_folder, 'utils_error.log')
-error_file_handler = RotatingFileHandler(error_log_file_path, maxBytes=5*1024*1024, backupCount=5)
+error_file_handler = RotatingFileHandler(error_log_file_path, maxBytes=1*1024*1024, backupCount=5)
 error_file_handler.setLevel(logging.ERROR)
 
 # Formatter for all handlers
@@ -38,7 +38,7 @@ utils_logger.addHandler(error_file_handler)
 
 webui_server_url = 'http://127.0.0.1:7860'
 checkpoint = "Yuna_NOFACE.safetensors"
-out_dir = 'static/img'
+out_dir = 'D:/stable_diffusion_database/images'
 
 out_dir_t2i = os.path.join(out_dir, 'txt2img')
 out_dir_i2i = os.path.join(out_dir, 'img2img')
@@ -59,19 +59,24 @@ def decode_and_save_base64(base64_str, save_path):
 
 def delete_img():
     try:
-        path = os.path.dirname(os.path.abspath(__file__))
-        img_path = os.path.join(path, "static", "img", "txt2img")
+
+        img_path = os.path.join('D:/stable_diffusion_database/images', 'txt2img')
         utils_logger.info(f"Image path: {img_path}")
+
         all_files = os.listdir(img_path)
         txt2img_files = [f for f in all_files if f.startswith('txt2img-')]
-        utils_logger.info(f"Found txt2img files: {txt2img_files}")
-        recent_files = sorted(txt2img_files, reverse=True)[:10]
+        # utils_logger.info(f"Found txt2img files: {txt2img_files}")
+
+        recent_files = sorted(txt2img_files, reverse=True)[:100]
+        # utils_logger.info(f"Retained the most recent 100 files: {', '.join(recent_files)}")
+
         for f in all_files:
             if f not in recent_files:
                 os.remove(os.path.join(img_path, f))
-        utils_logger.info(f"Retained the most recent three files: {', '.join(recent_files)}")
+        
     except Exception as e:
         utils_logger.error(f"Cannot delete files: {e}")
+
 
 def call_api(api_endpoint, method="post", **payload):
     headers = {'Content-Type': 'application/json'}
@@ -117,10 +122,19 @@ def get_current_model():
 
 def call_api_2(api_endpoint, method="post", **payload): # just for text2img
     headers = {'Content-Type': 'application/json'}
-    data = json.dumps(payload).encode('utf-8')
-    request = urllib.request.Request(f'{webui_server_url}/{api_endpoint}', data=data, headers=headers, method='POST')
-    response = urllib.request.urlopen(request)
-    return json.loads(response.read().decode('utf-8'))
+    url = f'{webui_server_url}/{api_endpoint}'
+    try:
+        response = requests.request(method, url, json=payload, headers=headers, timeout=300)
+        response.raise_for_status()
+        utils_logger.info(f"==========================text2img responesed:{response} =========================")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        utils_logger.error(f"API call failed: {e}")
+        return None
+    except Exception as e:
+        utils_logger.error(f"Unexpected error during API call: {e}")
+        return None
+
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -217,11 +231,13 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
     
     result = {
         "images": images,
-        "seed": seed
+        "seed": seed,
+        "paths": []
     }
     for index, image in enumerate(images): # save the images
         save_path = os.path.join(out_dir_t2i, f'txt2img-{timestamp()}-{index}.png')
         decode_and_save_base64(image, save_path)
+        result['paths'].append(save_path)
 
     return result
 
