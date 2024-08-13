@@ -8,6 +8,8 @@ import requests
 import cv2
 import logging
 from logging.handlers import RotatingFileHandler
+import socket
+socket.setdefaulttimeout(300)
 
 # Logger configuration
 utils_logger = logging.getLogger('utils_logger')

@@ -9,7 +9,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 from db import db  
 from models import User, Image 
-
+import socket
+socket.setdefaulttimeout(300)
 
 
 app = Flask(__name__)
