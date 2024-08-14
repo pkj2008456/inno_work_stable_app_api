@@ -193,4 +193,4 @@ with app.app_context():
 if __name__ == '__main__':
 
     from waitress import serve
-    serve(app, host='0.0.0.0', port=8080, channel_timeout=600,channel_backlog=100)
+    serve(app, host='0.0.0.0', port=8080, channel_timeout=60000,channel_backlog=100)
