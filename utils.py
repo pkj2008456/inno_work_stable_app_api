@@ -234,7 +234,7 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
     result = {
         "images": images,
         "seed": seed,
-        "paths": []
+        # "paths": []
     }
     for index, image in enumerate(images): # save the images
         save_path = os.path.join(out_dir_t2i, f'txt2img-{timestamp()}-{index}.png')
