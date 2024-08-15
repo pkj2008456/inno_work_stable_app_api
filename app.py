@@ -52,39 +52,19 @@ logger.addHandler(error_file_handler)
 @app.errorhandler(Exception)
 def handle_exception(e):
     logger.error(f"Unhandled Exception: {str(e)}", exc_info=True)
-    response = jsonify({'error': 'An internal error occurred.'})
+    error_message = str(e)
+    response = jsonify({'jimmy_error': 'An internal error occurred.','error' : {error_message}})
     response.status_code = 500
     return response
 
 @app.errorhandler(405)
 def method_not_allowed(e):
     logger.error(f"Method Not Allowed: {str(e)}", exc_info=True)
-    response = jsonify({'error': 'Method Not Allowed'})
+    error_message = str(e)
+    response = jsonify({'jimmy_error': 'Method Not Allowed','error' : {error_message}})
     response.status_code = 405
     return response
 
-@app.route('/add_user')
-def add_user():
-    new_user = User(username='test_user', email='test@example.com')
-    db.session.add(new_user)
-    db.session.commit()
-    return 'User added!'
-
-@app.route('/get_users')
-def get_users():
-    users = User.query.all()
-    return jsonify([user.username for user in users])
-
-@app.route('/users/<int:user_id>', methods=['GET'])
-def delete_user(user_id):
-    user = User.query.get(user_id)
-    if user is None:
-        abort(404, description="User not found")
-    
-    db.session.delete(user)
-    db.session.commit()
-    
-    return jsonify({'message': 'User deleted successfully'}), 200
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -185,7 +165,7 @@ def img2img():
         return jsonify({'images': images_base64}), 200
     except Exception as e:
         logger.error(f"Error in img2img: {e}")
-        return jsonify({'error': 'Internal Server Error'}), 500
+        return jsonify({'jimmy_error': f'Internal Server Error{str(e)}'}), 500
 
 with app.app_context():
     db.create_all()
