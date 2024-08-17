@@ -7,6 +7,6 @@ static/img/img2img/*
 !static/img/face/
 !static/img/img2img/
 test.json 
-__pycache__/
+
 testapi/*
 model_list.json
