@@ -9,6 +9,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from db import db  
 from models import User, Image 
+from auth_utils import check_password
 import socket
 socket.setdefaulttimeout(300)
 
@@ -22,6 +23,12 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.root_path = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOAD_FOLDER'] = 'static/img/face'
 app.secret_key = secrets.token_hex(32)
+
+
+
+PASSWORD = '123'
+
+
 
 log_folder = 'logs'
 os.makedirs(log_folder, exist_ok=True)
@@ -120,11 +127,19 @@ def set_checkpoint_route():
 
 @app.route('/txt2img', methods=['GET', 'POST'])
 def index():
-    logger.info(request.method)
-    if request.method == 'POST':
+    logger.info(f"Request method: {request.method}")
+
+    # headers = dict(request.headers)
+    # logger.info(f"Request headers: {json.dumps(headers, indent=4)}")
+
+    # auth_header = request.headers.get('Authorization')
+    # if auth_header and auth_header.startswith('Bearer '):
+    #     provided_password = auth_header.split(' ')[1]  # 获取 Bearer 之后的部分
+        
+    if request.method == 'POST' :
         logger.info("Into POST")
         data = request.get_json(force=True)
-        # logger.info(f"Data received: {data}")
+
         refresh()
         set_checkpoint(**data)
         current_model = get_current_model()
@@ -136,7 +151,6 @@ def index():
             del data['reactor_img']
         logger.info(f"Data after removing reactor_img: {data}")
         text2img_data = call_txt2img_api(control_pose, reactor_img, **data)
-        # logger.info(f"Text2Img data: {text2img_data}")
         with open('testapi/text2img_data.json','w') as f:
             json.dump(text2img_data,f,indent=4)
             logger.info("already gen to text2img_data.json")
@@ -146,6 +160,10 @@ def index():
         logger.info("GET request to /txt2img")
         message = "Don't request GET"
         return jsonify({'message': message})
+    # else:
+    #     logger.warning(f"Unauthorized access attempt with no valid Bearer token provided. Headers: {json.dumps(headers, indent=4)}")
+    #     return jsonify({'error': 'Unauthorized access'}), 401
+
 
 @app.route("/img2img", methods=["POST"])
 def img2img():
