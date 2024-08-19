@@ -129,40 +129,37 @@ def set_checkpoint_route():
 def index():
     logger.info(f"Request method: {request.method}")
 
-    # headers = dict(request.headers)
-    # logger.info(f"Request headers: {json.dumps(headers, indent=4)}")
+    data = request.get_json(force=True)
+    password = data.get('password')
+    logger.info(password)
+    if password and PASSWORD == password:
+        if request.method == 'POST':
+            logger.info("Into POST")
+            data = request.get_json(force=True)
 
-    # auth_header = request.headers.get('Authorization')
-    # if auth_header and auth_header.startswith('Bearer '):
-    #     provided_password = auth_header.split(' ')[1]  # 获取 Bearer 之后的部分
-        
-    if request.method == 'POST' :
-        logger.info("Into POST")
-        data = request.get_json(force=True)
-
-        refresh()
-        set_checkpoint(**data)
-        current_model = get_current_model()
-        logger.info(f"Current model: {current_model}")
-        control_pose = data["control_pose"]
-        logger.info(f"Control pose: {control_pose}")
-        reactor_img = data.get("reactor_img", {}).get("reactor_img", None)
-        if 'reactor_img' in data:
-            del data['reactor_img']
-        logger.info(f"Data after removing reactor_img: {data}")
-        text2img_data = call_txt2img_api(control_pose, reactor_img, **data)
-        with open('testapi/text2img_data.json','w') as f:
-            json.dump(text2img_data,f,indent=4)
-            logger.info("already gen to text2img_data.json")
-            
-        return jsonify(text2img_data)
+            refresh()
+            set_checkpoint(**data)
+            current_model = get_current_model()
+            logger.info(f"Current model: {current_model}")
+            control_pose = data["control_pose"]
+            logger.info(f"Control pose: {control_pose}")
+            reactor_img = data.get("reactor_img", {}).get("reactor_img", None)
+            if 'reactor_img' in data:
+                del data['reactor_img']
+            logger.info(f"Data after removing reactor_img: {data}")
+            text2img_data = call_txt2img_api(control_pose, reactor_img, **data)
+            with open('testapi/text2img_data.json','w') as f:
+                json.dump(text2img_data,f,indent=4)
+                logger.info("already gen to text2img_data.json")
+                
+            return jsonify(text2img_data)
+        else:
+            logger.info("GET request to /txt2img")
+            message = "Don't request GET"
+            return jsonify({'message': message})
     else:
-        logger.info("GET request to /txt2img")
-        message = "Don't request GET"
-        return jsonify({'message': message})
-    # else:
-    #     logger.warning(f"Unauthorized access attempt with no valid Bearer token provided. Headers: {json.dumps(headers, indent=4)}")
-    #     return jsonify({'error': 'Unauthorized access'}), 401
+        logger.warning(f"Unauthorized access attempt with no valid password token provided.")
+        return jsonify({'error': 'Unauthorized access'}), 401
 
 
 @app.route("/img2img", methods=["POST"])
