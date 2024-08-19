@@ -53,7 +53,7 @@ logger.addHandler(error_file_handler)
 def handle_exception(e):
     logger.error(f"Unhandled Exception: {str(e)}", exc_info=True)
     error_message = str(e)
-    response = jsonify({'jimmy_error': 'An internal error occurred.','error' : {error_message}})
+    response = jsonify({'jimmy_error': 'An internal error occurred.', 'error': str(error_message)})
     response.status_code = 500
     return response
 
@@ -124,7 +124,7 @@ def index():
     if request.method == 'POST':
         logger.info("Into POST")
         data = request.get_json(force=True)
-        logger.info(f"Data received: {data}")
+        # logger.info(f"Data received: {data}")
         refresh()
         set_checkpoint(**data)
         current_model = get_current_model()
