@@ -189,9 +189,28 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
     able_control = data["able_controlnet"]["able_controlnet"]
     controlnet_img_base64 = controlnet_img_base64["control_pose"]
     image_path = os.path.join(current_dir, 'static', 'img', 'control_pose', controlnet_img_base64)
-    img = cv2.imread(image_path)
-    retval, bytes = cv2.imencode('.png', img)
-    controlnet_img_base64 = base64.b64encode(bytes).decode('utf-8')   
+    result = {
+
+    }
+    try:
+
+        img = cv2.imread(image_path)
+        if img is None:
+            raise FileNotFoundError(f"Image at path {image_path} not found.")
+        
+
+        retval, bytes = cv2.imencode('.png', img)
+        if not retval:
+            raise ValueError("Image encoding failed.")
+        
+        controlnet_img_base64 = base64.b64encode(bytes).decode('utf-8')   
+    except (FileNotFoundError, ValueError) as e:
+
+        utils_logger.error(f"Error processing image: {e}")
+        result['message'] = f"{controlnet_img_base64} can not find in back-end change the new one"
+
+        controlnet_img_base64 =  os.path.join(current_dir, 'static', 'img', 'control_pose', '5.png')
+    
     controlnet_api = {
         "alwayson_scripts": {
             "controlnet": {
@@ -231,11 +250,9 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
     seed = {"seed": load_to_dict.get("seed")}
     utils_logger.info(f"Generated seed info: {seed}")
     
-    result = {
-        "images": images,
-        "seed": seed,
-        # "paths": []
-    }
+    
+    result['images'] = images
+    result["seed"]= seed
     for index, image in enumerate(images): # save the images
         save_path = os.path.join(out_dir_t2i, f'txt2img-{timestamp()}-{index}.png')
         decode_and_save_base64(image, save_path)

@@ -23,10 +23,10 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.root_path = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOAD_FOLDER'] = 'static/img/face'
 app.secret_key = secrets.token_hex(32)
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 
 
-
-PASSWORD = '123'
+PASSWORD = '9WUCV45bUUnZ4s%xy*gaN@GZuUZrwK%uv#uf-kYR4Xs6p$4mBH#2E3K=dG85u!Ax'
 
 
 
@@ -71,21 +71,26 @@ def method_not_allowed(e):
     response = jsonify({'jimmy_error': 'Method Not Allowed','error' : {error_message}})
     response.status_code = 405
     return response
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    return jsonify({"error": "File is too large"}), 413
 
+import base64
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['faceUpload']
+    
     if file.filename == '':
         update_message = 'No file selected.'
-    else:
-        filename = f"upload-{secure_filename(file.filename)}"
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        session["file_path"] = filepath
-        logger.info(f"File saved, session: {session.items()}")
-        update_message = 'File uploaded successfully.'
-    return jsonify({'update_message': update_message, 'file_path': filepath})
+        return jsonify({'update_message': update_message}), 400
+    
+    # 读取文件内容并进行Base64编码
+    file_data = file.read()
+    encoded_file = base64.b64encode(file_data).decode('utf-8')
+    
+    update_message = 'File uploaded and encoded successfully.'
+    return jsonify({'update_message': update_message, 'encoded_file': encoded_file})
 
 @app.route('/get_control_pose', methods=["GET"])
 def get_control_pose():
