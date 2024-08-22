@@ -51,43 +51,45 @@
     $ (env) python app.py   
     ```
 ## API文档
->domain: `https://ai-generation.innocorn.xyz`
+>domain: `https://ai-generation.innocorn.xyz`/'34.90.139.98:8080'
 
 1. this endpoint is for text to img "https://ai-generation.innocorn.xyz/txt2img"
 -   the request sample below 
       ***(methods = post)***
-   ```json
-    {
-    "able_controlnet": {
-        "able_controlnet": true #use controlnet or not
-    },
-    "payload": {
-        "prompt": "a south asian young adult others with white skin tone and an plus size body type, wearing a bohemian navy shirt dress leggings and white shoes, accessorized with a necklace,with long brown hair",
-        "negative_prompt": "(deformed iris, deformed pupils, semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4),(deformed, distorted, disfigured:1.3),poorly drawn,bad anatomy,wrong anatomy,extra limb,missing limb,floating limbs,disconnected limbs,mutation,mutated,ugly,disgusting,amputation,watermark text,",
-        "seed": 1,
-        "steps": 20,
-        "width": 720,
-        "height": 720,
-        "cfg_scale": 5,
-        "sampler_name": "DPM++ 2M",
-        "n_iter": 1,
-        "batch_size": 1,#how many gen photo you want
-        "override_settings": {
-            "sd_model_checkpoint": "realisticVisionV60B1_v51HyperVAE"
+   ```json    
+{
+    able_controlnet: { able_controlnet: true },
+    payload: {
+        prompt: 'extreme detail description , monochrome background , highly detailed , physically-based rendering ,ultra-fine painting ,a south asian young adult female with rosie skin tone and an plus size body type, accessorized with a nothings,wearing a bohemian warm tones mini dress leggings and white loafers, bob haircut hair , blonde hair colors, ',
+        negative_prompt: "(deformed iris,deformed pupils, foot don't grasp some things , semi-realistic, cgi, 3d, render, sketch, cartoon, drawing, anime, mutated hands and fingers:1.4),(deformed, distorted, disfigured:1.3),poorly drawn,bad anatomy,wrong anatomy,extra limb,missing limb,floating limbs,disconnected limbs,mutation,mutated,ugly,disgusting,amputation,watermark text, , moving, <knees bending:10> , bending knees , hand carry somethings",
+        seed: '-1',
+        steps: 25,
+        width: '620',
+        height: '880',
+        cfg_scale: 2,
+        sampler_name: 'DPM++ 2M',
+        n_iter: 1,
+        batch_size: 1,
+        override_settings: {
+        sd_model_checkpoint: 'realisticVisionV60B1_v51HyperVAE',
+        sd_vae: 'Karras'
         }
     },
-    "control_pose": {
-        "control_pose": "2.jpg"#if able_controlnet is false just dont change it
-    },
-    "reactor_img": { #if dont want to change the face just delete whole key
-        "reactor_img": "static/img/face\\upload-Damian_2_1.jpeg"
-    }
+    control_pose: { control_pose: '5.png' },
+    reactor_img: { #if dont want to change the face just delete whole key
+        reactor_img:"base64" },
+    password: '9WUCV45bUUnZ4s%xy*gaN@GZuUZrwK%uv#uf-kYR4Xs6p$4mBH#2E3K=dG85u!Ax'
 }
+ 
 ```
 ***return***
 ```json
 {
-    Gen_base64:"base64_string"
+    "images":["base64_string","base64_string"],
+    "seed":{
+        seed:int_num
+    },
+    "message":"warning message" #for cant find the control net 
 }
 ```
 ___
