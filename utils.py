@@ -9,6 +9,8 @@ import cv2
 import logging
 from logging.handlers import RotatingFileHandler
 import socket
+
+# Set default socket timeout to 300 seconds
 socket.setdefaulttimeout(300)
 
 # Logger configuration
@@ -38,39 +40,43 @@ error_file_handler.setFormatter(formatter)
 utils_logger.addHandler(file_handler)
 utils_logger.addHandler(error_file_handler)
 
+# WebUI server URL and checkpoint configuration
 webui_server_url = 'http://127.0.0.1:7860'
 checkpoint = "Yuna_NOFACE.safetensors"
 out_dir = 'D:/stable_diffusion_database/images'
 
+# Output directories for text-to-image and image-to-image
 out_dir_t2i = os.path.join(out_dir, 'txt2img')
 out_dir_i2i = os.path.join(out_dir, 'img2img')
 os.makedirs(out_dir_t2i, exist_ok=True)
 os.makedirs(out_dir_i2i, exist_ok=True)
 
+# Function to get the current timestamp
 def timestamp():
     return datetime.fromtimestamp(time.time()).strftime("%Y%m%d-%H%M%S")
 
+# Function to encode a file to base64
 def encode_file_to_base64(path):
     with open(path, 'rb') as file:
         return base64.b64encode(file.read()).decode('utf-8')
 
+# Function to decode base64 and save to a file
 def decode_and_save_base64(base64_str, save_path):
     with open(save_path, "wb") as file:
         file.write(base64.b64decode(base64_str))
     delete_img()
 
+# Function to delete old images, keeping only the most recent 100
 def delete_img():
     try:
-
         img_path = os.path.join('D:/stable_diffusion_database/images', 'txt2img')
         utils_logger.info(f"Image path: {img_path}")
 
         all_files = os.listdir(img_path)
         txt2img_files = [f for f in all_files if f.startswith('txt2img-')]
-        # utils_logger.info(f"Found txt2img files: {txt2img_files}")
 
+        # Retain the most recent 100 files
         recent_files = sorted(txt2img_files, reverse=True)[:100]
-        # utils_logger.info(f"Retained the most recent 100 files: {', '.join(recent_files)}")
 
         for f in all_files:
             if f not in recent_files:
@@ -79,7 +85,7 @@ def delete_img():
     except Exception as e:
         utils_logger.error(f"Cannot delete files: {e}")
 
-
+# Function to call an API endpoint
 def call_api(api_endpoint, method="post", **payload):
     headers = {'Content-Type': 'application/json'}
     url = f'{webui_server_url}/{api_endpoint}'
@@ -91,15 +97,18 @@ def call_api(api_endpoint, method="post", **payload):
         utils_logger.error(f"Error during API call to {api_endpoint}: {e}")
         return None
 
+# Function to set the checkpoint
 def set_checkpoint(**data):
     new_checkpoint_name = data['payload']['override_settings']['sd_model_checkpoint']
     utils_logger.info(f"Setting checkpoint: {new_checkpoint_name}")
     option_payload = {"sd_model_checkpoint": new_checkpoint_name}
     call_api('/sdapi/v1/options', method='POST', **option_payload)
 
+# Function to refresh checkpoints
 def refresh():
     call_api('/sdapi/v1/refresh-checkpoints', method='POST')
 
+# Function to get the list of models
 def get_model_list():
     try:
         response = requests.get(f'{webui_server_url}/sdapi/v1/sd-models')
@@ -112,6 +121,7 @@ def get_model_list():
         utils_logger.error(f"Error occurred while getting model list: {e}")
         return None
 
+# Function to get the current model
 def get_current_model():
     try:
         response = requests.get(f'{webui_server_url}/sdapi/v1/options')
@@ -122,13 +132,14 @@ def get_current_model():
         utils_logger.error(f"Error occurred while getting current model: {e}")
         return ''
 
-def call_api_2(api_endpoint, method="post", **payload): # just for text2img
+# Function to call an API endpoint with a long timeout (just for text2img)
+def call_api_2(api_endpoint, method="post", **payload):
     headers = {'Content-Type': 'application/json'}
     url = f'{webui_server_url}/{api_endpoint}'
     try:
         response = requests.request(method, url, json=payload, headers=headers, timeout=300)
         response.raise_for_status()
-        utils_logger.info(f"==========================text2img responesed:{response} =========================")
+        utils_logger.info(f"==========================text2img responded: {response} =========================")
         return response.json()
     except requests.exceptions.RequestException as e:
         utils_logger.error(f"API call failed: {e}")
@@ -137,29 +148,27 @@ def call_api_2(api_endpoint, method="post", **payload): # just for text2img
         utils_logger.error(f"Unexpected error during API call: {e}")
         return None
 
-
+# Get the current directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Function to get the reactor JSON configuration (for change face)
 def get_reactor_json(reactor_img):
-    # image_path = os.path.join(current_dir, reactor_img)
-    # basse64 = encode_file_to_base64(image_path)
     bassae64 = base64.b64decode(reactor_img)
     basse64 = base64.b64encode(bassae64).decode('utf-8')
-    # utils_logger.info(f"======================A {basse64} A=====================")
     model_dir = os.path.join(current_dir, '..', 'stable-diffusion-webui', 'models', 'insightface')
     model_path = os.path.join(model_dir, 'inswapper_128.onnx')
     
     reactor_json = {
         "args": [
-            basse64, #0
+            basse64, #0 Base64 encoded image
             True, #1 Enable ReActor
             '0', #2 Comma separated face number(s) from swap-source image
             '0', #3 Comma separated face number(s) for target image (result)
-            model_path, #4 model path
-            'CodeFormer', #4 Restore Face: None; CodeFormer; GFPGAN
-            1, #5 Restore visibility value
+            model_path, #4 Model path
+            'CodeFormer', #5 Restore Face: None; CodeFormer; GFPGAN
+            1, #6 Restore visibility value
             True, #7 Restore face -> Upscale
-            '4x_NMKD-Superscale-SP_178000_G', #8 Upscaler (type 'None' if doesn't need), see full list here: http://127.0.0.1:7860/sdapi/v1/script-info -> reactor -> sec.8
+            '4x_NMKD-Superscale-SP_178000_G', #8 Upscaler (type 'None' if doesn't need)
             1.5, #9 Upscaler scale value
             1, #10 Upscaler visibility (if scale = 1)
             False, #11 Swap in source image
@@ -174,9 +183,9 @@ def get_reactor_json(reactor_img):
             "CUDA", #20 CPU or CUDA (if you have it), CPU - by default
             False, #21 Face Mask Correction
             0, #22 Select Source, 0 - Image, 1 - Face Model, 2 - Source Folder
-            "elena.safetensors", #23 Filename of the face model (from "models/reactor/faces"), e.g. elena.safetensors, don't forger to set #22 to 1
-            "C:/PATH_TO_FACES_IMAGES", #24 The path to the folder containing source faces images, don't forger to set #22 to 2
-            None, #25 skip it for API
+            "elena.safetensors", #23 Filename of the face model (from "models/reactor/faces")
+            "C:/PATH_TO_FACES_IMAGES", #24 The path to the folder containing source faces images
+            None, #25 Skip it for API
             True, #26 Randomly select an image from the path
             True, #27 Force Upscale even if no face found
             0.6, #28 Face Detection Threshold
@@ -185,30 +194,26 @@ def get_reactor_json(reactor_img):
     }
     return reactor_json
 
+# Function to call the text-to-image API
 def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data): 
     able_control = data["able_controlnet"]["able_controlnet"]
     controlnet_img_base64 = controlnet_img_base64["control_pose"]
     image_path = os.path.join(current_dir, 'static', 'img', 'control_pose', controlnet_img_base64)
-    result = {
+    result = {}
 
-    }
     try:
-
         img = cv2.imread(image_path)
         if img is None:
             raise FileNotFoundError(f"Image at path {image_path} not found.")
         
-
         retval, bytes = cv2.imencode('.png', img)
         if not retval:
             raise ValueError("Image encoding failed.")
         
         controlnet_img_base64 = base64.b64encode(bytes).decode('utf-8')   
     except (FileNotFoundError, ValueError) as e:
-
         utils_logger.error(f"Error processing image: {e}")
         result['message'] = f"{controlnet_img_base64} can not find in back-end change the new one"
-
         controlnet_img_base64 =  os.path.join(current_dir, 'static', 'img', 'control_pose', '5.png')
     
     controlnet_api = {
@@ -250,19 +255,16 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
     seed = {"seed": load_to_dict.get("seed")}
     utils_logger.info(f"Generated seed info: {seed}")
     
-    
     result['images'] = images
     result["seed"]= seed
-    for index, image in enumerate(images): # save the images
+    for index, image in enumerate(images): # Save the images
         save_path = os.path.join(out_dir_t2i, f'txt2img-{timestamp()}-{index}.png')
         decode_and_save_base64(image, save_path)
-        # result['paths'].append(save_path)
 
     return result
 
+# Function to call the image-to-image API
 def call_img2img_api(**payload):
     response = call_api('sdapi/v1/img2img', **payload)
     images = response.get('images', [])
-    # utils_logger.info(f"Base64 images: {images}")
     return images
-

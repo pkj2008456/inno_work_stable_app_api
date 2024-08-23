@@ -9,6 +9,9 @@
   - [功能](#功能)
   - [安装](#安装)
   - [API文档](#api文档)
+  - [enhanced](#enhanced)
+  - [extra](#extra)
+  - [notify](#notify)
 
 ## 功能
 
@@ -24,29 +27,23 @@
 
 1.ensure you already install the stable diffusion webui and and setup the "--api"
 
-1. **clone项目：**
-
-   ```bash
-   git clone https://github.com/pkj2008456/inno_work_stable_app_api.git
-   cd inno_work_stable_app_api
-   ```
-2. Install `virtualenv`:
+1. Install `virtualenv`:
     ```bash
     $ pip install virtualenv
     ```
-3. Open a terminal in the project root directory and run:
+2. Open a terminal in the project root directory and run:
     ```
     $ virtualenv env
     ```
-4. Then run the command:
+3. Then run the command:
     ```
     $ .\env\Scripts\activate
     ```
-5. Then install the dependencies:
+4. Then install the dependencies:
     ```
     $ (env) pip install -r requirements.txt
     ```
-6. Finally start the web server:
+5. Finally start the web server:
     ```bash
     $ (env) python app.py   
     ```
@@ -229,8 +226,17 @@ ___
     }
 ]
 ```
-   
+   ## enhanced
+1. tiem out 
+2. api key
+3. load-balancing
+4. shot down process(stable diffusion webui cmd)
 
+## extra
 
+1. txt2img folder path 'D:\stable_diffusion_database'
+2. https://github.com/pkj2008456/stable_diffusion_can_use(**stable_diffusion_webui**)
 
-
+## notify
+for checkpoint :
+    <p>The official API says that it can be changed directly using <span style='color:blue;'>**override_settings**</span>, but this is not possible after testing. So I found out that the method is to use <span style='color:red;'>**refresh------(/sdapi/v1/refresh-checkpoints)** </span>end point and then use <span style = 'color:red;'>/sdapi/v1/options </span>endpoint to successfully convert.</p>
