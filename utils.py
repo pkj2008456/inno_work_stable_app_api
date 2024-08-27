@@ -43,7 +43,8 @@ utils_logger.addHandler(error_file_handler)
 # WebUI server URL and checkpoint configuration
 webui_server_url = 'http://127.0.0.1:7860'
 checkpoint = "Yuna_NOFACE.safetensors"
-out_dir = 'D:/stable_diffusion_database/images'
+base_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前文件所在的绝对路径
+out_dir = os.path.join(base_dir, 'static', 'img')
 
 # Output directories for text-to-image and image-to-image
 out_dir_t2i = os.path.join(out_dir, 'txt2img')
@@ -69,7 +70,7 @@ def decode_and_save_base64(base64_str, save_path):
 # Function to delete old images, keeping only the most recent 100
 def delete_img():
     try:
-        img_path = os.path.join('D:/stable_diffusion_database/images', 'txt2img')
+        img_path = os.path.join(out_dir, 'txt2img')
         utils_logger.info(f"Image path: {img_path}")
 
         all_files = os.listdir(img_path)

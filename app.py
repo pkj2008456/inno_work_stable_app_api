@@ -7,7 +7,7 @@ import secrets
 from flask_cors import CORS
 import logging
 from logging.handlers import RotatingFileHandler
-from db import db  
+# from db import db  
 from models import User, Image 
 from auth_utils import check_password
 import socket
@@ -16,9 +16,9 @@ socket.setdefaulttimeout(300)
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///D:\\stable_diffusion_database\\test1.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Desktop\\test1.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db.init_app(app)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.root_path = os.path.dirname(os.path.abspath(__file__))
 app.config['UPLOAD_FOLDER'] = 'static/img/face'
@@ -187,8 +187,8 @@ def img2img():
         logger.error(f"Error in img2img: {e}")
         return jsonify({'jimmy_error': f'Internal Server Error{str(e)}'}), 500
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
     
 if __name__ == '__main__':
 
