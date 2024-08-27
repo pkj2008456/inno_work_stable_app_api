@@ -234,7 +234,7 @@ ___
 
 ## extra
 
-1. txt2img folder path 'D:\stable_diffusion_database'
+1. txt2img folder path 'static/img/txt2img'
 2. https://github.com/pkj2008456/stable_diffusion_can_use(**stable_diffusion_webui**)
 
 ## notify
