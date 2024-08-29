@@ -268,4 +268,13 @@ def call_txt2img_api(controlnet_img_base64, reactor_img=None, **data):
 def call_img2img_api(**payload):
     response = call_api('sdapi/v1/img2img', **payload)
     images = response.get('images', [])
-    return images
+    result_info = response.get("info", "{}")
+    load_to_dict = json.loads(result_info)
+    seed = load_to_dict["seed"]
+    
+    result={
+        "images":images,
+        "seed":seed
+    }
+    utils_logger.info(json.dumps(result,indent=4))
+    return result
